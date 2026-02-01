@@ -1,0 +1,89 @@
+name: 'Gravito Review Gate'
+description: 'AI governance control plane - Review artifacts before shipping, block releases that fail quality gates'
+author: 'Gravito'
+
+branding:
+  icon: 'shield'
+  color: 'purple'
+
+inputs:
+  api-key:
+    description: 'Gravito API key for authentication'
+    required: true
+  
+  api-url:
+    description: 'Gravito API endpoint (defaults to production)'
+    required: false
+    default: 'https://api.gravito.ai'
+  
+  surface:
+    description: 'Surface type to review (website, support, sales, email)'
+    required: false
+    default: 'website'
+  
+  pack:
+    description: 'Rubric pack to use (default, strict, enterprise)'
+    required: false
+    default: 'default'
+  
+  paths:
+    description: 'Glob patterns for files to review (comma-separated)'
+    required: false
+    default: '**/*.tsx,**/*.ts,**/*.md,**/*.html'
+  
+  fail-on-block:
+    description: 'Fail the check run if any artifact is blocked'
+    required: false
+    default: 'true'
+  
+  auto-apply-patches:
+    description: 'Automatically apply suggested patches (creates commit)'
+    required: false
+    default: 'false'
+  
+  post-inline-comments:
+    description: 'Post issues and patches as inline PR comments'
+    required: false
+    default: 'true'
+  
+  generate-proof-block:
+    description: 'Generate proof block artifact for audit trail'
+    required: false
+    default: 'true'
+  
+  threshold:
+    description: 'Minimum score to pass (0-100)'
+    required: false
+    default: '75'
+
+outputs:
+  passed:
+    description: 'Whether all artifacts passed the review gate'
+  
+  total-reviewed:
+    description: 'Total number of artifacts reviewed'
+  
+  passed-count:
+    description: 'Number of artifacts that passed'
+  
+  blocked-count:
+    description: 'Number of artifacts that were blocked'
+  
+  warned-count:
+    description: 'Number of artifacts with warnings'
+  
+  average-score:
+    description: 'Average score across all reviewed artifacts'
+  
+  proof-block-url:
+    description: 'URL to the proof block artifact in Gravito dashboard'
+  
+  audit-url:
+    description: 'URL to the audit trail for this review'
+  
+  proof-id:
+    description: 'Unique proof block ID for this gate run'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

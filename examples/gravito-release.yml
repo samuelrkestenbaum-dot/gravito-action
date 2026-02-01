@@ -1,0 +1,66 @@
+# Gravito Release Gate
+# 
+# This workflow runs Gravito on every push to main (release).
+# Uses stricter threshold than PR review.
+# Generates proof block for compliance/audit.
+#
+# Setup:
+# 1. Add GRAVITO_API_KEY to repository secrets
+# 2. Copy this file to .github/workflows/gravito-release.yml
+# 3. Push to main and watch Gravito gate your release
+
+name: Gravito Release Gate
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  gravito-release-gate:
+    name: Gravito Release Gate
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run Gravito Release Gate
+        id: gravito
+        uses: gravito/gravito-action@v1
+        with:
+          api-key: ${{ secrets.GRAVITO_API_KEY }}
+          surface: website
+          pack: strict
+          paths: |
+            src/**/*.tsx
+            src/**/*.ts
+            content/**/*.md
+            docs/**/*.md
+          threshold: 80
+          fail-on-block: true
+          post-inline-comments: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      # Proof block is ALWAYS generated (even on failure)
+      - name: Upload Proof Block
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gravito-release-proof-${{ github.sha }}
+          path: |
+            gate_report.json
+            gate_report.md
+          retention-days: 365
+      
+      # Optional: Notify on failure
+      - name: Notify on Gate Failure
+        if: failure()
+        run: |
+          echo "::error::Gravito Release Gate BLOCKED"
+          echo "Proof ID: ${{ steps.gravito.outputs.proof-id }}"
+          echo "Blocked: ${{ steps.gravito.outputs.blocked-count }} artifacts"
+          echo "Average Score: ${{ steps.gravito.outputs.average-score }}"

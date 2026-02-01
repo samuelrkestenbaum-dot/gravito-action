@@ -1,0 +1,33 @@
+{
+  "name": "gravito-action",
+  "version": "1.0.0",
+  "description": "Gravito Review Gate - AI governance control plane for CI/CD",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "ncc build src/index.ts -o dist --source-map --license licenses.txt",
+    "test": "vitest run",
+    "lint": "eslint src/",
+    "package": "npm run build"
+  },
+  "keywords": [
+    "github-action",
+    "gravito",
+    "ai-governance",
+    "review-gate",
+    "quality-assurance"
+  ],
+  "author": "Gravito",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/artifact": "^2.1.0",
+    "@actions/core": "^1.10.1",
+    "@actions/github": "^6.0.0",
+    "@actions/glob": "^0.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@vercel/ncc": "^0.38.1",
+    "typescript": "^5.3.0",
+    "vitest": "^2.0.0"
+  }
+}

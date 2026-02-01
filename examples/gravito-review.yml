@@ -1,0 +1,78 @@
+# Gravito Review Gate - Example Workflow
+# 
+# Add this to your repository at .github/workflows/gravito-review.yml
+# 
+# This workflow runs Gravito's AI governance review on every pull request,
+# blocking merges that fail quality gates.
+
+name: Gravito Review Gate
+
+on:
+  pull_request:
+    branches: [main, master]
+    paths:
+      - '**.tsx'
+      - '**.ts'
+      - '**.md'
+      - '**.html'
+      - 'content/**'
+
+jobs:
+  gravito-review:
+    name: AI Governance Review
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      pull-requests: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Run Gravito Review Gate
+        uses: gravito/gravito-action@v1
+        with:
+          api-key: ${{ secrets.GRAVITO_API_KEY }}
+          
+          # Surface type (website, support, sales, email)
+          surface: website
+          
+          # Rubric pack (default, strict, enterprise)
+          pack: default
+          
+          # Files to review (glob patterns)
+          paths: |
+            **/*.tsx
+            **/*.ts
+            **/*.md
+            content/**/*.html
+          
+          # Minimum score to pass (0-100)
+          threshold: 75
+          
+          # Fail the check if any artifact is blocked
+          fail-on-block: true
+          
+          # Post issues and patches as inline PR comments
+          post-inline-comments: true
+          
+          # Generate proof block for audit trail
+          generate-proof-block: true
+          
+          # Auto-apply safe patches (optional)
+          # auto-apply-patches: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Upload Proof Block
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gravito-proof-block
+          path: |
+            gate_report.json
+            gate_report.md
+          retention-days: 90

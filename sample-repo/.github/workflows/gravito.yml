@@ -1,0 +1,30 @@
+name: Gravito Review
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'website/**'
+      - '*.md'
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    name: Review with Gravito
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Gravito Review
+        uses: gravito/gravito-action@v1
+        with:
+          api_key: ${{ secrets.GRAVITO_API_KEY }}
+          surface: website
+          threshold: 75
+          auto_apply: false
+          post_comments: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
