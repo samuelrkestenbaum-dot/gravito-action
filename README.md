@@ -1,5 +1,7 @@
 # Gravito Review Gate
 
+> **🟡 PRIVATE PILOT** — Request access at [gravito.ai/contact](https://gravito.ai/contact)
+
 > **Install Gravito into your CI and it becomes your release gate for AI.**
 
 The Gravito GitHub Action reviews AI-generated content before it ships, blocking releases that fail quality gates. Like Snyk for security, SonarQube for code quality, or Datadog for observability—but for AI governance.
@@ -41,7 +43,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - uses: gravito/gravito-action@v1
+      - uses: samuelrkestenbaum-dot/gravito-action@v1
         with:
           api-key: ${{ secrets.GRAVITO_API_KEY }}
           surface: website
@@ -157,7 +159,7 @@ Configure the `surface` input based on what you're reviewing:
 Enable `auto-apply-patches: true` to automatically fix safe issues:
 
 ```yaml
-- uses: gravito/gravito-action@v1
+- uses: samuelrkestenbaum-dot/gravito-action@v1
   with:
     api-key: ${{ secrets.GRAVITO_API_KEY }}
     auto-apply-patches: true
@@ -210,7 +212,7 @@ Use this for:
 ### Basic Website Review
 
 ```yaml
-- uses: gravito/gravito-action@v1
+- uses: samuelrkestenbaum-dot/gravito-action@v1
   with:
     api-key: ${{ secrets.GRAVITO_API_KEY }}
     surface: website
@@ -219,7 +221,7 @@ Use this for:
 ### Strict Enterprise Review
 
 ```yaml
-- uses: gravito/gravito-action@v1
+- uses: samuelrkestenbaum-dot/gravito-action@v1
   with:
     api-key: ${{ secrets.GRAVITO_API_KEY }}
     surface: website
@@ -231,7 +233,7 @@ Use this for:
 ### Support Content Review
 
 ```yaml
-- uses: gravito/gravito-action@v1
+- uses: samuelrkestenbaum-dot/gravito-action@v1
   with:
     api-key: ${{ secrets.GRAVITO_API_KEY }}
     surface: support
@@ -243,7 +245,7 @@ Use this for:
 ### Review with Auto-Fix
 
 ```yaml
-- uses: gravito/gravito-action@v1
+- uses: samuelrkestenbaum-dot/gravito-action@v1
   with:
     api-key: ${{ secrets.GRAVITO_API_KEY }}
     auto-apply-patches: true
